@@ -111,25 +111,33 @@ def main(argv=None):
     p.add_argument("--k", type=int, default=TOP_K)
     p.add_argument("--mode", default=RETRIEVAL_MODE, choices=["hybrid", "dense", "sparse"])
     p.add_argument("--min-score", type=float, default=MIN_DENSE_SCORE)
+    p.add_argument("--reranker", default=None, help="cross-encoder model name ('' = off; default from .env)")
     p.add_argument("--answers", action="store_true", help="also run the LLM (costs money)")
     p.add_argument("--name", default=None, help="experiment name for the results file")
     p.add_argument("--min-hit", type=float, default=None, help="fail (exit 1) if Hit@k(doc) is below this")
     args = p.parse_args(argv)
     name = args.name or args.mode
 
+    import time
+
+    from src.config import RERANKER
     from src.retrieve import get_retriever
 
+    reranker = RERANKER if args.reranker is None else args.reranker
     items = load_items()
-    retriever = get_retriever()
+    retriever = get_retriever(reranker)
+    t0 = time.perf_counter()
     hits_per_item = [retriever.search(i["question"], k=args.k, mode=args.mode) for i in items]
     m = retrieval_metrics(items, hits_per_item, args.min_score)
+    m["retrieval_ms_per_question"] = round((time.perf_counter() - t0) * 1000 / len(items))
 
     for row in m["per_question"]:
         mark = "✓" if row["page_rank"] else ("~" if row["doc_rank"] else "✗")
         print(f"{mark} doc@{row['doc_rank'] or '-'} page@{row['page_rank'] or '-'}  {row['question'][:70]}")
     print("  (✓ right page, ~ right document but wrong page, ✗ missed)\n")
 
-    print(f"Retrieval  ({args.mode}, k={args.k}, n={m['n_answerable']})")
+    print(f"Retrieval  ({args.mode}, k={args.k}, reranker={reranker or 'off'}, n={m['n_answerable']}, "
+          f"{m['retrieval_ms_per_question']} ms/question)")
     print(f"  Hit@{args.k} doc {fmt(m['hit_doc'])}   Hit@{args.k} page {fmt(m['hit_page'])}   MRR {m['mrr']:.3f}")
     print(f"Abstention gate (cosine < {args.min_score}, n_unanswerable={m['n_unanswerable']})")
     print(f"  refuses unanswerable {fmt(m['gate_refusal_unanswerable'])}   false refusals {fmt(m['gate_false_refusal'])}")
@@ -137,7 +145,8 @@ def main(argv=None):
     print(f"  best cosine, unanswerable: {m['best_scores_unanswerable']}")
     print("  -> pick MIN_DENSE_SCORE between the two groups.")
 
-    result = {"name": name, "mode": args.mode, "k": args.k, "min_score": args.min_score, "retrieval": m}
+    result = {"name": name, "mode": args.mode, "k": args.k, "reranker": reranker, "min_score": args.min_score,
+              "retrieval": m}
 
     if args.answers:
         from src.generate import answer
