@@ -104,3 +104,19 @@ def test_off_mode_never_calls_judge():
     r = answer("How often?", retriever=FakeRetriever(HITS), llm=GOOD, min_score=0.8, verify="off",
                judge=lambda t, h: (_ for _ in ()).throw(AssertionError("judge called")))
     assert "faithfulness" not in r
+
+
+def test_judge_sees_original_citation_numbers():
+    """Regression: the judge used to see the cited sources renumbered 1..n, so an answer citing [2]
+    pointed at a source the judge could not find and was wrongly marked unsupported."""
+    from src.generate import build_context
+    seen = {}
+
+    def judge(text, hits):
+        seen["ctx"] = build_context(hits)
+        return '{"supported": true, "unsupported_claims": []}'
+
+    answer("Can I work?", retriever=FakeRetriever(HITS), llm=lambda q, h: "Up to 140 full days [2].",
+           min_score=0.8, verify="report", judge=judge)
+    assert seen["ctx"].startswith("[2] (visa.pdf, page 3)")
+    assert "[1]" not in seen["ctx"]

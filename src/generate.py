@@ -47,8 +47,10 @@ def get_client():
 
 
 def build_context(hits: list[dict]) -> str:
+    """Numbered source list. A hit may carry its own number "n" (used by the judge, which sees
+    only the cited sources but must keep the numbers the answer refers to)."""
     return "\n\n".join(
-        f"[{i}] ({h['source']}, page {h['page']})\n{h['text']}" for i, h in enumerate(hits, 1)
+        f"[{h.get('n', i)}] ({h['source']}, page {h['page']})\n{h['text']}" for i, h in enumerate(hits, 1)
     )
 
 
@@ -167,7 +169,7 @@ def answer(question: str, retriever=None, llm=call_llm, min_score: float = MIN_D
     verdict = None
     if verify in ("report", "enforce"):
         # the judge only sees the sources the answer cites: a claim must be backed by ITS citation
-        verdict = check_faithfulness(text, [hits[i - 1] for i in cited], judge=judge)
+        verdict = check_faithfulness(text, [{**hits[i - 1], "n": i} for i in cited], judge=judge)
         if verify == "enforce" and verdict["supported"] is False:
             return {**not_found(question, reason="unfaithful"), "faithfulness": verdict}
 
