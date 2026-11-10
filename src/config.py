@@ -44,3 +44,8 @@ RERANK_CANDIDATES = int(os.getenv("RERANK_CANDIDATES", 20))
 # compressed (unrelated text often scores ~0.7), so tune this on your eval set:
 # run `python -m eval.run_eval` and look at the "abstention" section.
 MIN_DENSE_SCORE = float(os.getenv("MIN_DENSE_SCORE", 0.83))
+
+# Faithfulness check: a second LLM call ("judge") verifies that every claim in the answer is backed by
+# the sources it cites. off | report (attach verdict) | enforce (refuse unsupported answers).
+# Costs one extra LLM call per answered question.
+FAITHFULNESS_CHECK = os.getenv("FAITHFULNESS_CHECK", "off")

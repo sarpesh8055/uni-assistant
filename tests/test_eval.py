@@ -38,10 +38,32 @@ def test_answer_metrics():
         {"found": False, "sources": []},
     ]
     a = answer_metrics(items, answers)
+    a.pop("faithfulness")
     assert a == {"refusal_unanswerable": 1.0, "false_refusal": 0.5, "citation_accuracy": 1.0}
+
+
+def test_faithfulness_metrics_simulates_enforcement():
+    from eval.run_eval import faithfulness_metrics
+    items = [{"expected": [{"source": "a.pdf"}]}, {"expected": [{"source": "b.pdf"}]}, {"expected": [{"source": "c.pdf"}]}]
+    answers = [
+        {"found": True, "faithfulness": {"supported": True}},
+        {"found": True, "faithfulness": {"supported": False}},
+        {"found": False},
+    ]
+    f = faithfulness_metrics(items, answers)
+    assert f["n_judged"] == 2 and f["supported_rate"] == 0.5 and f["n_unsupported"] == 1
+    assert abs(f["false_refusal_if_enforced"] - 2 / 3) < 1e-9
 
 
 def test_translation_or_original_both_count_as_hit():
     items = [{"question": "q", "expected": [{"source": "en.pdf", "pages": [9]}, {"source": "de.pdf", "pages": [8]}]}]
     m = retrieval_metrics(items, [[h("x.pdf", 1), h("de.pdf", 8)]], min_score=0.8)
     assert m["hit_page"] == 1.0 and m["mrr"] == 0.5
+
+
+def test_quality_gate():
+    from eval.run_eval import quality_gate_failures
+    m = {"hit_doc": 0.97, "hit_page": 0.80}
+    assert quality_gate_failures(m, 5, 0.90, None) == []
+    fails = quality_gate_failures(m, 5, 0.90, 0.85)
+    assert len(fails) == 1 and "page" in fails[0]

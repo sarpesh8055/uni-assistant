@@ -38,6 +38,7 @@ class AskResponse(BaseModel):
     found: bool = Field(..., description="False when the assistant refused because the documents don't cover it")
     reason: str
     sources: list[Source]
+    faithfulness: dict | None = Field(None, description="Judge verdict when FAITHFULNESS_CHECK is report/enforce")
     latency_ms: int
 
 

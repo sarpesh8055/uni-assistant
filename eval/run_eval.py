@@ -89,11 +89,28 @@ def retrieval_metrics(items: list[dict], hits_per_item: list[list[dict]], min_sc
     }
 
 
+def faithfulness_metrics(items: list[dict], answers: list[dict]) -> dict:
+    """Judge verdicts in report mode, plus what false refusals WOULD be if we enforced them."""
+    judged = [(i, a) for i, a in zip(items, answers) if a.get("faithfulness")]
+    verdicts = [a["faithfulness"]["supported"] for _, a in judged]
+    n_ans = sum(answerable(i) for i in items) or 1
+    would_refuse = sum(1 for i, a in judged if answerable(i) and a["faithfulness"]["supported"] is False)
+    already = sum(1 for i, a in zip(items, answers) if answerable(i) and not a["found"])
+    return {
+        "n_judged": len(judged),
+        "supported_rate": (verdicts.count(True) / len(judged)) if judged else None,
+        "n_unsupported": verdicts.count(False),
+        "n_unknown": verdicts.count(None),
+        "false_refusal_if_enforced": (already + would_refuse) / n_ans,
+    }
+
+
 def answer_metrics(items: list[dict], answers: list[dict]) -> dict:
     ans = [(i, a) for i, a in zip(items, answers) if answerable(i)]
     unans = [(i, a) for i, a in zip(items, answers) if not answerable(i)]
     answered = [(i, a) for i, a in ans if a["found"]]
     return {
+        "faithfulness": faithfulness_metrics(items, answers),
         "refusal_unanswerable": (sum(not a["found"] for _, a in unans) / len(unans)) if unans else None,
         "false_refusal": (sum(not a["found"] for _, a in ans) / len(ans)) if ans else None,
         "citation_accuracy": (
@@ -113,8 +130,11 @@ def main(argv=None):
     p.add_argument("--min-score", type=float, default=MIN_DENSE_SCORE)
     p.add_argument("--reranker", default=None, help="cross-encoder model name ('' = off; default from .env)")
     p.add_argument("--answers", action="store_true", help="also run the LLM (costs money)")
+    p.add_argument("--verify", action="store_true",
+                   help="with --answers: run the faithfulness judge in report mode (one extra LLM call per answer)")
     p.add_argument("--name", default=None, help="experiment name for the results file")
     p.add_argument("--min-hit", type=float, default=None, help="fail (exit 1) if Hit@k(doc) is below this")
+    p.add_argument("--min-page-hit", type=float, default=None, help="fail (exit 1) if Hit@k(page) is below this")
     args = p.parse_args(argv)
     name = args.name or args.mode
 
@@ -151,13 +171,25 @@ def main(argv=None):
     if args.answers:
         from src.generate import answer
 
-        answers = [answer(i["question"], retriever=retriever, min_score=args.min_score) for i in items]
+        verify = "report" if args.verify else "off"
+        answers = [answer(i["question"], retriever=retriever, min_score=args.min_score, verify=verify)
+                   for i in items]
         a = answer_metrics(items, answers)
         result["answers"] = a
         result["answer_details"] = [{"question": i["question"], **ans} for i, ans in zip(items, answers)]
         print("\nEnd-to-end (LLM)")
         print(f"  refuses unanswerable {fmt(a['refusal_unanswerable'])}   false refusals {fmt(a['false_refusal'])}"
               f"   citation accuracy {fmt(a['citation_accuracy'])}")
+        if args.verify:
+            f = a["faithfulness"]
+            print(f"Faithfulness judge (report mode, n_answered={f['n_judged']})")
+            print(f"  judged supported {fmt(f['supported_rate'])}   unsupported {f['n_unsupported']}"
+                  f"   unparseable {f['n_unknown']}")
+            print(f"  if enforced: false refusals would be {fmt(f['false_refusal_if_enforced'])}")
+            for d in result["answer_details"]:
+                v = d.get("faithfulness") or {}
+                if v.get("supported") is False:
+                    print(f"  ✗ {d['question'][:60]}  ->  {v['unsupported_claims'][:2]}")
 
     RESULTS_DIR.mkdir(exist_ok=True)
     out = RESULTS_DIR / f"{name}.json"
@@ -167,8 +199,21 @@ def main(argv=None):
     print(f"| {name} | {fmt(m['hit_doc'])} | {fmt(m['hit_page'])} | {m['mrr']:.3f} "
           f"| {fmt(m['gate_refusal_unanswerable'])} | {fmt(m['gate_false_refusal'])} |")
 
-    if args.min_hit is not None and m["hit_doc"] < args.min_hit:
-        sys.exit(f"FAIL: Hit@{args.k} doc {m['hit_doc']:.2%} < required {args.min_hit:.2%}")
+    failures = quality_gate_failures(m, args.k, args.min_hit, args.min_page_hit)
+    if failures:
+        sys.exit("FAIL: " + "; ".join(failures))
+    if args.min_hit is not None or args.min_page_hit is not None:
+        print("Quality gate passed.")
+
+
+def quality_gate_failures(m: dict, k: int, min_hit: float | None, min_page_hit: float | None) -> list[str]:
+    """Used by CI: a change that makes retrieval worse fails the build instead of shipping silently."""
+    failures = []
+    if min_hit is not None and m["hit_doc"] < min_hit:
+        failures.append(f"Hit@{k} doc {m['hit_doc']:.2%} < required {min_hit:.2%}")
+    if min_page_hit is not None and m["hit_page"] < min_page_hit:
+        failures.append(f"Hit@{k} page {m['hit_page']:.2%} < required {min_page_hit:.2%}")
+    return failures
 
 
 if __name__ == "__main__":
