@@ -1,5 +1,7 @@
 # 🎓 Uni & Behörden Assistant
 
+[![ci](https://github.com/sarpesh8055/-uni-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/sarpesh8055/-uni-assistant/actions/workflows/ci.yml)
+
 A multilingual (German/English) RAG assistant that answers questions about German university
 regulations and administrative documents, **with source citations**.
 
