@@ -15,7 +15,7 @@ import re
 import sys
 from functools import lru_cache
 
-from src.config import FAITHFULNESS_CHECK, LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, MIN_DENSE_SCORE
+from src.config import FAITHFULNESS_CHECK, JUDGE_MODEL, LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, MIN_DENSE_SCORE
 from src.ingest import guess_language
 
 NOT_FOUND_TOKEN = "NOT_FOUND"
@@ -87,7 +87,7 @@ Reply with JSON only: {"supported": true|false, "unsupported_claims": ["..."]}""
 
 def call_judge(answer_text: str, hits: list[dict]) -> str:
     response = get_client().chat.completions.create(
-        model=LLM_MODEL,
+        model=JUDGE_MODEL,
         temperature=0,
         messages=[
             {"role": "system", "content": JUDGE_PROMPT},
