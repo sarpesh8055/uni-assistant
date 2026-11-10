@@ -116,9 +116,15 @@ streamlit run src/ui.py             # terminal 2
    | BM25 only | 97% | 79% | 0.752 | – | – |
    | Chunk size 500 | | | | | |
    | `intfloat/multilingual-e5-base` | | | | | |
-   | + Reranker (step 8) | | | | | |
+   | + Reranker `mmarco-mMiniLMv2-L12` (small, multilingual) | 100% | 89% | 0.857 | 43% | 0% |
+   | + Reranker `bge-reranker-v2-m3` (568M params) | not run: out of memory on a 4 GB RAM laptop | | | | |
 
    First rows measured on 11 Uni Paderborn ESE v3 PDFs and 45 questions (38 answerable, 7 unanswerable), retrieval only.
+   Reranker takeaway: the small reranker finds the right *document* more often but the right *page* less often,
+   and adds several seconds per question on CPU, so it stays **off** by default (`RERANKER=` in `.env`).
+   The large one needs ~2.3 GB for the weights alone; measure it on a machine with more RAM
+   (e.g. Google Colab) before deciding.
+
    End-to-end with the LLM (`--answers`, Groq `openai/gpt-oss-120b`):
 
    | Run | Refuses unanswerable | False refusals | Citation accuracy | Wrong-language answers |
