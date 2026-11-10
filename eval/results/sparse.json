@@ -1,0 +1,256 @@
+{
+  "name": "sparse",
+  "mode": "sparse",
+  "k": 5,
+  "min_score": 0.8,
+  "retrieval": {
+    "n_answerable": 38,
+    "n_unanswerable": 7,
+    "hit_doc": 0.9736842105263158,
+    "hit_page": 0.7894736842105263,
+    "mrr": 0.7521929824561403,
+    "gate_refusal_unanswerable": 0.42857142857142855,
+    "gate_false_refusal": 0.0,
+    "best_scores_answerable": [
+      0.821,
+      0.832,
+      0.833,
+      0.836,
+      0.843,
+      0.845,
+      0.846,
+      0.847,
+      0.847,
+      0.848,
+      0.849,
+      0.851,
+      0.851,
+      0.852,
+      0.854,
+      0.857,
+      0.857,
+      0.858,
+      0.858,
+      0.859,
+      0.86,
+      0.862,
+      0.865,
+      0.867,
+      0.867,
+      0.871,
+      0.872,
+      0.874,
+      0.875,
+      0.881,
+      0.881,
+      0.882,
+      0.884,
+      0.886,
+      0.888,
+      0.889,
+      0.89,
+      0.901
+    ],
+    "best_scores_unanswerable": [
+      0.756,
+      0.785,
+      0.796,
+      0.803,
+      0.832,
+      0.843,
+      0.844
+    ],
+    "per_question": [
+      {
+        "question": "How many times can I attempt an exam in Electrical Systems Engineering?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "Wie oft darf ich eine Prüfung wiederholen?",
+        "doc_rank": 4,
+        "page_rank": 5
+      },
+      {
+        "question": "Is the last retake of a written exam done as an oral exam?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "Can I retake an exam I already passed to improve my grade?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "Is there a limit on retakes in the General Education module?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "How often are exams offered per academic year?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "What grade do I need to pass an exam?",
+        "doc_rank": 4,
+        "page_rank": null
+      },
+      {
+        "question": "How long does a written exam last?",
+        "doc_rank": 4,
+        "page_rank": 4
+      },
+      {
+        "question": "How many weeks after an exam must the grade be published?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "How much can bonus points improve my module grade?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "Until when can I cancel my exam registration?",
+        "doc_rank": 1,
+        "page_rank": 5
+      },
+      {
+        "question": "Bis wann kann ich mich von einer Prüfung abmelden?",
+        "doc_rank": 2,
+        "page_rank": 5
+      },
+      {
+        "question": "I was sick on the exam day. By when do I have to inform the examination committee?",
+        "doc_rank": 1,
+        "page_rank": null
+      },
+      {
+        "question": "What happens if I miss an exam without a valid reason?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "What is the penalty for cheating in an exam?",
+        "doc_rank": 1,
+        "page_rank": 5
+      },
+      {
+        "question": "How many times can I deregister from a compulsory elective module and pick another one?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "If a course has attendance rules, how much do I have to attend?",
+        "doc_rank": 2,
+        "page_rank": 2
+      },
+      {
+        "question": "How many ECTS credits does the master's programme have?",
+        "doc_rank": 2,
+        "page_rank": 3
+      },
+      {
+        "question": "Wie lange ist die Regelstudienzeit im Master?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "How many hours of work is one credit point?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "What are the specialisations in Electrical Systems Engineering?",
+        "doc_rank": 2,
+        "page_rank": 2
+      },
+      {
+        "question": "How many credits is the General Education (Studium Generale) module?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "How many additional credits can I take beyond the required modules?",
+        "doc_rank": 2,
+        "page_rank": 2
+      },
+      {
+        "question": "What final grade do I need for 'passed with distinction'?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "What IELTS or TOEFL score do I need for admission?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "Do I need German language skills to be admitted to ESE?",
+        "doc_rank": 2,
+        "page_rank": null
+      },
+      {
+        "question": "What minimum bachelor grade is required for admission?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "Which GRE scores are required?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "How many credits do I need before I can start my master's thesis?",
+        "doc_rank": 4,
+        "page_rank": null
+      },
+      {
+        "question": "How long do I have to write my master's thesis?",
+        "doc_rank": 4,
+        "page_rank": null
+      },
+      {
+        "question": "Can my master's thesis deadline be extended?",
+        "doc_rank": 1,
+        "page_rank": 2
+      },
+      {
+        "question": "Can I write my master's thesis in German?",
+        "doc_rank": 3,
+        "page_rank": null
+      },
+      {
+        "question": "What is the maximum length of the master's thesis?",
+        "doc_rank": null,
+        "page_rank": null
+      },
+      {
+        "question": "What happens if I fail my master's thesis?",
+        "doc_rank": 1,
+        "page_rank": 4
+      },
+      {
+        "question": "How long does it take to get my thesis grade?",
+        "doc_rank": 2,
+        "page_rank": null
+      },
+      {
+        "question": "Wie lade ich meine Masterarbeit elektronisch in PAUL hoch?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "Until when can v2 students take exams under the old examination regulations?",
+        "doc_rank": 1,
+        "page_rank": 1
+      },
+      {
+        "question": "Can I go back to v2 after switching to the v3 regulations?",
+        "doc_rank": 2,
+        "page_rank": 2
+      }
+    ]
+  }
+}
