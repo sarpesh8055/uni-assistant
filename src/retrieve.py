@@ -6,7 +6,8 @@ import pickle
 import sys
 from functools import lru_cache
 
-from src.config import BM25_FILE, EMBED_MODEL, EMBEDDINGS_FILE, RETRIEVAL_MODE, TOP_K
+from src.config import (BM25_FILE, EMBED_MODEL, EMBEDDINGS_FILE, RERANK_CANDIDATES, RERANKER,
+                        RETRIEVAL_MODE, TOP_K)
 from src.index import load_chunks, tokenize
 
 
@@ -23,7 +24,7 @@ def rrf_fuse(rankings: list[list[int]], rrf_k: int = 60) -> dict[int, float]:
 
 
 class HybridRetriever:
-    def __init__(self):
+    def __init__(self, reranker: str = RERANKER):
         import numpy as np
         from sentence_transformers import SentenceTransformer
 
@@ -33,12 +34,24 @@ class HybridRetriever:
         with open(BM25_FILE, "rb") as f:
             self.bm25 = pickle.load(f)
         self.model = SentenceTransformer(EMBED_MODEL)
+        self.reranker_name = reranker
+        self._reranker = None
+
+    def rerank(self, query: str, idxs: list[int]) -> list[int]:
+        """Cross-encoder: reads question and chunk TOGETHER, so it judges relevance much better
+        than comparing two separate embeddings. Too slow for the whole corpus, fine for 20 candidates."""
+        if self._reranker is None:
+            from sentence_transformers import CrossEncoder
+
+            self._reranker = CrossEncoder(self.reranker_name, max_length=512)
+        scores = self._reranker.predict([(query, self.chunks[i]["text"]) for i in idxs])
+        return [i for _, i in sorted(zip(scores, idxs), key=lambda t: -t[0])]
 
     def dense_scores(self, query: str):
         q = self.model.encode(f"query: {query}", normalize_embeddings=True)
         return self.emb @ q   # cosine similarity, because both sides are normalised
 
-    def search(self, query: str, k: int = TOP_K, mode: str = RETRIEVAL_MODE) -> list[dict]:
+    def search(self, query: str, k: int = TOP_K, mode: str = RETRIEVAL_MODE, rerank: bool | None = None) -> list[dict]:
         """Return the top-k chunks. Every hit carries `dense_score` (cosine similarity),
         which generate.py uses to decide whether the documents cover the question at all."""
         np = self.np
@@ -53,16 +66,21 @@ class HybridRetriever:
         if not rankings:
             raise ValueError(f"unknown retrieval mode: {mode!r}")
         fused = rrf_fuse(rankings)
-        best = sorted(fused, key=fused.get, reverse=True)[:k]
+        ranked = sorted(fused, key=fused.get, reverse=True)
+        use_rerank = bool(self.reranker_name) if rerank is None else rerank
+        if use_rerank:
+            best = self.rerank(query, ranked[:RERANK_CANDIDATES])[:k]
+        else:
+            best = ranked[:k]
         return [
             {**self.chunks[i], "score": round(fused[i], 4), "dense_score": round(float(dense[i]), 4)}
             for i in best
         ]
 
 
-@lru_cache(maxsize=1)
-def get_retriever() -> HybridRetriever:
-    return HybridRetriever()
+@lru_cache(maxsize=2)
+def get_retriever(reranker: str = RERANKER) -> HybridRetriever:
+    return HybridRetriever(reranker)
 
 
 if __name__ == "__main__":

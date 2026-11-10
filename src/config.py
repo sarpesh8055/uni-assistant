@@ -33,6 +33,12 @@ CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 150))  # characters shared betwee
 TOP_K = int(os.getenv("TOP_K", 5))                    # chunks given to the LLM
 RETRIEVAL_MODE = os.getenv("RETRIEVAL_MODE", "hybrid")  # hybrid | dense | sparse
 
+# Optional cross-encoder reranker: re-scores the top RERANK_CANDIDATES fused hits and keeps TOP_K.
+# Empty = off. Multilingual options: BAAI/bge-reranker-v2-m3 (best, ~2 GB, slow on CPU),
+# cross-encoder/mmarco-mMiniLMv2-L12-H384-v1 (small, fast).
+RERANKER = os.getenv("RERANKER", "")
+RERANK_CANDIDATES = int(os.getenv("RERANK_CANDIDATES", 20))
+
 # Abstention gate: if the best chunk's cosine similarity to the question is below
 # this, we answer "I couldn't find this" WITHOUT calling the LLM. e5 scores are
 # compressed (unrelated text often scores ~0.7), so tune this on your eval set:
