@@ -1,0 +1,821 @@
+{
+  "source_run": "faithfulness-llm.json",
+  "judge_model": "openai/gpt-oss-20b",
+  "faithfulness": {
+    "n_judged": 35,
+    "supported_rate": 0.8857142857142857,
+    "n_unsupported": 4,
+    "n_unknown": 0,
+    "false_refusal_if_enforced": 0.18421052631578946
+  },
+  "mismatched": 0,
+  "answer_details": [
+    {
+      "question": "How many times can I attempt an exam in Electrical Systems Engineering?",
+      "answer": "I couldn't find this in the documents.",
+      "found": false,
+      "reason": "llm_not_found",
+      "sources": []
+    },
+    {
+      "question": "Wie oft darf ich eine Prüfung wiederholen?",
+      "answer": "Nach den Besonderen Bestimmungen ist die Anzahl der Prüfungsversuche auf drei begrenzt – nach dem ersten Versuch können Sie also maximal zweimal wiederholen, insgesamt also drei Versuche pro Prüfung [5]. Die letzte Wiederholung einer Klausur wird dabei als mündliche Prüfung von 30‑45 Minuten durchgeführt [4].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 5,
+          "source": "upb_ese_besondere_bestimmungen_v3_de.pdf",
+          "page": 9,
+          "snippet": "Universität Paderborn AM 35.24 \n \n§ 42 \nGesamtnote \nDas Prädikat „mit Auszeichnung bestanden“ wird vergeben, wenn die nach § 21 Absatz 2 der Allgemeinen \nBestimmungen ermittelte Gesamtnote mindestens 1,1 ist. \n§ 43 \nWiederholung von Prüfungsleistungen, Kompensation \n(1) Die Anzahl der Prüfungsversuc"
+        },
+        {
+          "n": 4,
+          "source": "upb_ese_besondere_bestimmungen_v3_de.pdf",
+          "page": 9,
+          "snippet": "(2) Abweichend von § 22 Absatz 2 der Allgemeinen Bestimmungen wird die letzte Wiederholung einer \nPrüfung in Klausurform als mündliche Prüfung von 30 bis 45 Minuten Dauer abgehalten. § 15 Absatz \n1 Nr. 2 der Allgemeine Bestimmungen gilt entsprechend. Im Einzelfall kann die Ablegung als Klausur \ngemä"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Is the last retake of a written exam done as an oral exam?",
+      "answer": "Yes. The final (last) attempt at a written examination is taken as an oral exam lasting 30 – 45 minutes, either by rule or at the candidate’s request [1][2].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 19,
+          "snippet": "l module examinations can be retaken under the \nrules for examination attempts, should the grade awarded be “unsatisfactory”. The \nnumber of examination attempts and any substitution possibilities are regulated in \nthe special provisions of the individual degree programme. A module is finally failed"
+        },
+        {
+          "n": 2,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 9,
+          "snippet": " three. Deviating from this, a failed examination in the General Education \nmodule can be repeated or replaced by an examination in another course. The number of replacements and the number of retakes are not limited in the General Education module. \n \n(2) Contrary to section 22 paragraph 2 of the g"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Can I retake an exam I already passed to improve my grade?",
+      "answer": "No, you cannot retake an exam that you have already passed in order to improve your grade; only unsatisfactory or failed examinations may be repeated. Examinations that have been passed cannot be retaken[4]. (Failed exams are limited to three attempts, but this does not apply to passed exams.)",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 4,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 19,
+          "snippet": "l examination of 30 to 45 minutes duration. \nOtherwise, section 15 No. 2 applies accordingly. Further and differing regulations \nare contained in the special provisions. \n(3) \nIf the master's thesis is evaluated with grade “unsatisfactory”, it may be retaken \nonce. For this, a new topic is to be ass"
+        }
+      ],
+      "faithfulness": {
+        "supported": false,
+        "unsupported_claims": [
+          "only unsatisfactory or failed examinations may be repeated",
+          "Failed exams are limited to three attempts"
+        ]
+      }
+    },
+    {
+      "question": "Is there a limit on retakes in the General Education module?",
+      "answer": "There is no limit on the number of retakes (or replacements) for a failed examination in the General Education module — the special provisions explicitly state that retakes are not limited in this module[1][2].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 9,
+          "snippet": " three. Deviating from this, a failed examination in the General Education \nmodule can be repeated or replaced by an examination in another course. The number of replacements and the number of retakes are not limited in the General Education module. \n \n(2) Contrary to section 22 paragraph 2 of the g"
+        },
+        {
+          "n": 2,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 9,
+          "snippet": "born”. \n \n \nSection 41 \nAdditional modules \nStudents can partake in additional achievements for up to 24 additional credits in accordance with section \n20 of the general provisions in modules that do not have a participant limit. This upper limit also includes \nfailed examinations. \nSection 42 \nFina"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How often are exams offered per academic year?",
+      "answer": "Examinations are typically scheduled **twice per academic year**[3].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 3,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 8,
+          "snippet": "born”. \n \n \nProject work \n \nIn a project, students work alone or in a group on a topic specified by the members of the teaching \nstaff. Project work generally includes documenting and presenting the work done, this latter in a \ntalk of 30 to 45 minutes. \n \n(3) Qualified participation is established "
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "What grade do I need to pass an exam?",
+      "answer": "I couldn't find this in the documents.",
+      "found": false,
+      "reason": "llm_not_found",
+      "sources": []
+    },
+    {
+      "question": "How long does a written exam last?",
+      "answer": "A written exam usually lasts between 90 and 180 minutes [2], but the exact duration depends on the credit load of the module: 60–120 minutes for a module of up to 5 credits and 120–240 minutes for a module with more than 5 credits [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 2,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 12,
+          "snippet": "evaluation in Paderborn University's campus management system no later than six \nweeks after the examination has been completed. \n1. Written exams: \n- In written exams, students should demonstrate that they are able to \nunderstand problems in the subject within a specified time using the aids \nappro"
+        },
+        {
+          "n": 1,
+          "source": "upb_ese_preamble_v3.pdf",
+          "page": 9,
+          "snippet": "In the Master’s program there exist different forms of assessments (written or oral exam, oral presentation, written report or other assessments). The assessments are offered directly after the end of the \nmodule. Credits will only be granted if the entire module is completed successfully. \nThe dura"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How many weeks after an exam must the grade be published?",
+      "answer": "The grade must be published within ten weeks after all relevant information for the decision has been submitted[3].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 3,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 7,
+          "snippet": " \n1 within ten weeks of the complete submission of all information relevant to the \ndecision. \n(9) \nRecognition of study achievements is noted in the certificate. Where study \nachievements are recognised, if the grading systems are comparable, the grade is \nto be adopted, where necessary after conve"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How much can bonus points improve my module grade?",
+      "answer": "The bonus system may raise the module grade by up to 0.7 points, provided the final exam is passed independently of the bonus achievements[1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 14,
+          "snippet": "be completed in connection with a specific course. \nBonus achievements are generally taken voluntarily in the course of a student's \nstudies. The following forms of assessment are permitted: in-class work or \nhomework, certificates of achievement or project work. These bonus achievements \nshould pre"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Until when can I cancel my exam registration?",
+      "answer": "You can cancel your exam registration up to two days before the exam is scheduled to take place [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 19,
+          "snippet": "ssed cannot be retaken. \nSection 23 \nCancellation of registration, non-attendance, withdrawal, cheating, breach of \nregulations, protection regulations and students with family responsibilities \n(1) \nRegistration for an examination can be cancelled up to two days before it is due to \ntake place at t"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Bis wann kann ich mich von einer Prüfung abmelden?",
+      "answer": "Sie können sich bis spätestens **zwei Tage vor dem jeweiligen Prüfungstermin** online im Campus‑Management‑System (PAUL) von der Prüfung abmelden[3][4].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 3,
+          "source": "upb_paul_guide_students_2026_de.pdf",
+          "page": 35,
+          "snippet": "6.2.1 Prüfungsanmeldung \n \nDurch das Anklicken des Menüpunkts Prüfungsanmeldung können Sie sich mit Hilfe der Schaltflächen Anmelden für die vom jeweiligen Bewertungssystem abhängigen Prüfungsleistungen bzw. regelmäßige oder \nqualifizierte Teilnahmen der jeweiligen Module bzw. Lehrveranstaltungen an"
+        },
+        {
+          "n": 4,
+          "source": "upb_eim_master_allgemeine_bestimmungen_v3_de.pdf",
+          "page": 18,
+          "snippet": "Universität Paderborn AM 32.24 Seite 18 von 22 \n \n \n(4) Bestandene Prüfungen können nicht wiederholt werden. \n§ 23 \nAbmeldung, Versäumnis, Rücktritt, Täuschung, Ordnungsverstoß, Schutzvorschriften und \nStudierende mit Familienaufgaben \n(1) Eine Abmeldung von Prüfungen kann bis spätestens zwei Tage v"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "I was sick on the exam day. By when do I have to inform the examination committee?",
+      "answer": "You must notify the Examination Committee in writing without delay, but no later than **five working days after the exam date** [2].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 2,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 20,
+          "snippet": "(2) \nShould a candidate fail to attend an exam without valid reasons, should they \nwithdraw from the exam after its commencement without valid reasons, or should \nthey withdraw from the exam after the cancellation deadline given in paragraph 1 \nwithout valid reasons, then examination assessment is r"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "What happens if I miss an exam without a valid reason?",
+      "answer": "If you miss an exam without a valid reason (or withdraw after the deadline without a valid reason), the examination is automatically graded “unsatisfactory” (5.0) [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 20,
+          "snippet": "(2) \nShould a candidate fail to attend an exam without valid reasons, should they \nwithdraw from the exam after its commencement without valid reasons, or should \nthey withdraw from the exam after the cancellation deadline given in paragraph 1 \nwithout valid reasons, then examination assessment is r"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "What is the penalty for cheating in an exam?",
+      "answer": "Cheating (or attempting to cheat) results in the exam being graded “unsatisfactory” (grade 5.0) [3]. In addition, acts of deception may be penalised with a fine of up to €50,000 and can lead to de‑registration from the university [2].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 3,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 20,
+          "snippet": "care could not be guaranteed in any other way, in \nparticular if the candidate is predominantly the sole carer. If the Examination \nCommittee accepts the reasons given, the candidate will be informed in writing and \na new examination date will be set. In this case, the examination results which are "
+        },
+        {
+          "n": 2,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 20,
+          "snippet": "e examination assessment in question may be assessed as \n“unsatisfactory” (5.0). The incidents are recorded by the exam invigilators. The \ndetermination according to sentence 1 or the decision according to sentence 2 is \nmade by the relevant examiner. \n(5) \nA candidate who disrupts the proper conduc"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How many times can I deregister from a compulsory elective module and pick another one?",
+      "answer": "You may deregister from a compulsory elective module up to **four times** and then select a different elective module [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 9,
+          "snippet": "the \ngeneral provisions. \n \n(3) A candidate who has passed a module examination in a compulsory elective area that is recorded \nas an additional achievement in accordance with section 41 can request that it is exchanged for an \nexamination of a module from the same compulsory elective area, whether "
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "If a course has attendance rules, how much do I have to attend?",
+      "answer": "You must attend at least two‑thirds of the course sessions for the attendance requirement to be considered fulfilled, unless the module description specifies a different rule[1][3].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 14,
+          "snippet": "ld a course require regular participation (attendance regulations), these are to \nbe regulated by the module descriptions. Unless otherwise specified in the module \ndescription, regular participation in a course is deemed to have taken place if the \nstudent has attended at least two thirds of the co"
+        },
+        {
+          "n": 3,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 14,
+          "snippet": "be completed in connection with a specific course. \nBonus achievements are generally taken voluntarily in the course of a student's \nstudies. The following forms of assessment are permitted: in-class work or \nhomework, certificates of achievement or project work. These bonus achievements \nshould pre"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How many ECTS credits does the master's programme have?",
+      "answer": "The master's programme comprises 120 ECTS credits [1][5].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 5,
+          "snippet": "me. The Examination Committee determines \nwhether the content is significantly similar. \nSection 6 \nStandard period of study, and the scope, structure and components of the \nprogramme \n(1) \nThe standard period of study is four semesters including the master's examination \nThis corresponds to a total"
+        },
+        {
+          "n": 5,
+          "source": "upb_ese_preamble_v3.pdf",
+          "page": 4,
+          "snippet": "e 2, the Master’s program consists of six compulsory modules (30 credit \npoints), four compulsory elective modules (24 CP) and two elective modules (12 CP), totaling 66 credit \npoints. The degree plan is complemented with general studies (6 CP), one one-year project or two halfyear projects (18 CP) "
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Wie lange ist die Regelstudienzeit im Master?",
+      "answer": "Die Regelstudienzeit im Master beträgt einschließlich der Masterprüfung **vier Semester**[1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_allgemeine_bestimmungen_v3_de.pdf",
+          "page": 6,
+          "snippet": "Universität Paderborn AM 32.24 Seite 6 von 22 \n \n \ndem begehrten Masterstudiengang zwingend vorgeschrieben ist. Die Feststellungen über die \nerhebliche inhaltliche Nähe trifft der Prüfungsausschuss. \n§ 6 \nRegelstudienzeit, Studienumfang, Gliederung des Studiums und Leistungselemente \n(1) Die Regelst"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How many hours of work is one credit point?",
+      "answer": "One credit point (CP) corresponds to an average workload of 30 hours [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 5,
+          "snippet": "me. The Examination Committee determines \nwhether the content is significantly similar. \nSection 6 \nStandard period of study, and the scope, structure and components of the \nprogramme \n(1) \nThe standard period of study is four semesters including the master's examination \nThis corresponds to a total"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "What are the specialisations in Electrical Systems Engineering?",
+      "answer": "The Electrical Systems Engineering master’s program offers two specialisations: **Signal & Information Processing** and **Electronics & Devices**[1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 5,
+          "snippet": " \n(1) The master's examination is taken in one of the two specialisations “Signal & Information Processing” or “Electronics & Devices”. At the start of the first semester, the candidate selects a specialisation. \n \n(2) To change specialisation, a candidate must make a written application to the Exam"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How many credits is the General Education (Studium Generale) module?",
+      "answer": "The General Education (Studium Generale) module is worth 9 credit points [1][3].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 6,
+          "snippet": " group “Signal & Information Processing”, \nor \nif the specialisation “Electronics & Devices” is chosen: \n2 compulsory elective modules from the module group “Electronics & Devices”, each for \n6 credit points, \nh. 2 compulsory elective module from the module group “Electrical Systems Engineering” \nfo"
+        },
+        {
+          "n": 3,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 6,
+          "snippet": "edit points each for projects \nlasting a half year, \nk. Master’s Thesis for 30 credit points. \n \n(4) On application and in individual cases, the Examination Committee may allow taking a course from \na compulsory elective module in another compulsory elective module if the content of the course \nmatc"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How many additional credits can I take beyond the required modules?",
+      "answer": "You may take up to 24 additional credit points beyond the required modules [4].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 4,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 9,
+          "snippet": "born”. \n \n \nSection 41 \nAdditional modules \nStudents can partake in additional achievements for up to 24 additional credits in accordance with section \n20 of the general provisions in modules that do not have a participant limit. This upper limit also includes \nfailed examinations. \nSection 42 \nFina"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "What final grade do I need for 'passed with distinction'?",
+      "answer": "The “passed with distinction” grade is awarded when the final grade is 1.1 or better (i.e., a grade of 1.1 or lower) [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 9,
+          "snippet": "born”. \n \n \nSection 41 \nAdditional modules \nStudents can partake in additional achievements for up to 24 additional credits in accordance with section \n20 of the general provisions in modules that do not have a participant limit. This upper limit also includes \nfailed examinations. \nSection 42 \nFina"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "What IELTS or TOEFL score do I need for admission?",
+      "answer": "You need at least a 6.0 in the IELTS test, or a TOEFL Internet‑based test (iBT) score of 87 points (or a paper‑based TOEFL score of 585 points) to be admitted[1][4].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 5,
+          "snippet": "born”. \n \n \na. a bachelor's degree taken in an English speaking country or in an English-language accredited institution in Germany;1 \nb. a Test of English as Foreign Language (TOEFL) as an ‘Internet-based’ Test (iBT) with \na score of at least 87 points; \nc. a TOEFL as a ‘paper-based’ Test (PBT) wit"
+        },
+        {
+          "n": 4,
+          "source": "upb_ese_besondere_bestimmungen_v3_de.pdf",
+          "page": 5,
+          "snippet": "Universität Paderborn AM 35.24 \n \nausreichende englische Sprachkenntnisse. Die ausreichende Beherrschung der englischen Sprache ist wie folgt nachzuweisen: \na. Bachelorabschluss im englischsprachigen Ausland1 oder in einem als englischsprachig \nakkreditierten, inländischen Studiengang oder \nb. Test "
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Do I need German language skills to be admitted to ESE?",
+      "answer": "No, you do not need to prove German language skills to be admitted to the ESE programme; the special provisions explicitly state that proof of sufficient German language skills is not required, overriding the general provisions[1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 5,
+          "snippet": "born”. \n \n \na. a bachelor's degree taken in an English speaking country or in an English-language accredited institution in Germany;1 \nb. a Test of English as Foreign Language (TOEFL) as an ‘Internet-based’ Test (iBT) with \na score of at least 87 points; \nc. a TOEFL as a ‘paper-based’ Test (PBT) wit"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "What minimum bachelor grade is required for admission?",
+      "answer": "A bachelor’s degree must have been completed with a final grade of 2.5 or better in the German grading system (where 1.0 is the best and 4.0 the minimum passing grade) [2].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 2,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 4,
+          "snippet": "dividual modules are given in the module descriptions. \nSection 33 \nStart of studies \nThe programme can be started in either the winter or the summer semester. \nSection 34 \nAdmission requirements \n(1) In accordance with section 5 of the general provisions, the degree programme requires study compone"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Which GRE scores are required?",
+      "answer": "The required GRE scores are at least **157 points in the Quantitative Reasoning** section and **4.0 points in the Analytical Writing** section [1][3].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 5,
+          "snippet": "n by or on the basis of international treaties must \nprove their ability to study by providing the results of a GRE Revised General Test. As a general rule, \nat least 157 points in the “Quantitative Reasoning” part and at least 4.0 points in the “Analytical \nWriting” part of the GRE Revised General "
+        },
+        {
+          "n": 3,
+          "source": "upb_ese_besondere_bestimmungen_v3_de.pdf",
+          "page": 5,
+          "snippet": "d von § 5 Abs. 1 Nr. 3 der Allgemeinen \nBestimmungen ist der Nachweis ausreichender deutscher Sprachkenntnisse nicht erforderlich. \n \n(4) Eine ausländische Studienbewerberin bzw. ein ausländischer Studienbewerber, die bzw. der nicht \ndurch oder aufgrund völkerrechtlicher Verträge Deutschen gleichges"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How many credits do I need before I can start my master's thesis?",
+      "answer": "You must have earned 27 credit points (from the required modules) before you may begin the master’s thesis [5].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 5,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 7,
+          "snippet": "y modules for 27 credit points: \na. Advanced System Theory and Modeling & Simulation \nb. Electromagnetic Waves and Waveguides, and Analysis and Design of Electronic Circuits \n(specialisation E&D) \nc. Statistical Signal Processing and Statistical and Machine Learning (specialisation I&S) \nAdmission t"
+        }
+      ],
+      "faithfulness": {
+        "supported": false,
+        "unsupported_claims": [
+          "You must have earned 27 credit points (from the required modules) before you may begin the master’s thesis"
+        ]
+      }
+    },
+    {
+      "question": "How long do I have to write my master's thesis?",
+      "answer": "You normally have six months to write your master’s thesis [1]. If you need more time, you may request an individual extension of up to six weeks, provided the request (with justification and supervisor approval) is submitted at least one week before the original deadline [4].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 8,
+          "snippet": "s thesis \nis six months. If the thesis takes less than five months to complete, the supervisor must justify this in \nwritten form to the Examination Committee. \n \n(2) The module Master’s Project consists of the thesis plan (qualified participation, workload 150 \nhours, determined by the first examin"
+        },
+        {
+          "n": 4,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 8,
+          "snippet": "'s thesis must be presented in a final oral presentation (approx. 45-60 \nminutes) four weeks after submission of the master's thesis. The final presentation is counted as part \nof the master’s thesis for the purpose of its evaluation. \n \n(4) In contrast to section 17 paragraph 7 of the general provi"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Can my master's thesis deadline be extended?",
+      "answer": "Yes, the deadline can be extended. If you are ill, you may request an extension of up to twice the originally allotted period, provided you submit a medical certificate promptly [1][4]. In regular cases you can ask the Examination Committee for an additional up to four weeks, submitting the request at least one week before the deadline and obtaining your supervisor’s approval [2]. Under the special provisions, an individual request may grant an extension of up to six weeks, also requiring a request one week in advance and supervisor approval [3].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 16,
+          "snippet": "topic of the thesis. \nFurthermore, the supervisor responsible in accordance with paragraph 3 must \napprove. The special provisions of the individual degree programme may provide \nfor different regulations. \n(8) \nIn the event of illness during the period set aside for working on the master's thesis, "
+        },
+        {
+          "n": 4,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 21,
+          "snippet": "idual case. \nThe time allowed for working on the master's thesis can be extended to \ndouble the standard time at most. Otherwise, the thesis set will be deemed \nnot to have been assigned and the candidate will be given a new topic after \nthe end of the parental leave. \nc) Upon application, the Exami"
+        },
+        {
+          "n": 2,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 16,
+          "snippet": "\n(6) \nThe time allowed to complete the master's thesis is set out in the special \nprovisions. The topic, definition of the project and length of the thesis is to be \nlimited so that the workload envisaged, a maximum of 900 hours (30 CP), can be \nkept to. \n(7) \nThe topic can be returned once, within "
+        },
+        {
+          "n": 3,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 8,
+          "snippet": "'s thesis must be presented in a final oral presentation (approx. 45-60 \nminutes) four weeks after submission of the master's thesis. The final presentation is counted as part \nof the master’s thesis for the purpose of its evaluation. \n \n(4) In contrast to section 17 paragraph 7 of the general provi"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Can I write my master's thesis in German?",
+      "answer": "Yes. The master’s thesis is normally written in German, although it may be written in English (or another language) if the supervising examiner approves it and the special provisions allow it [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 16,
+          "snippet": "s the request, the candidate will be also informed of this in writing. \n(9) \nThe master's thesis is generally written in German. If the examiner responsible for \nthe supervision agrees, it can be written in English. Upon application, it can be \nwritten in a language other than German or English. The"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "What is the maximum length of the master's thesis?",
+      "answer": "The master's thesis may be up to 900 hours of work, corresponding to 30 credit points (CP) [1][3].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 16,
+          "snippet": "\n(6) \nThe time allowed to complete the master's thesis is set out in the special \nprovisions. The topic, definition of the project and length of the thesis is to be \nlimited so that the workload envisaged, a maximum of 900 hours (30 CP), can be \nkept to. \n(7) \nThe topic can be returned once, within "
+        },
+        {
+          "n": 3,
+          "source": "upb_ese_special_provisions_v3.pdf",
+          "page": 8,
+          "snippet": "s thesis \nis six months. If the thesis takes less than five months to complete, the supervisor must justify this in \nwritten form to the Examination Committee. \n \n(2) The module Master’s Project consists of the thesis plan (qualified participation, workload 150 \nhours, determined by the first examin"
+        }
+      ],
+      "faithfulness": {
+        "supported": false,
+        "unsupported_claims": [
+          "The master's thesis may be up to 900 hours of work, corresponding to 30 credit points (CP)"
+        ]
+      }
+    },
+    {
+      "question": "What happens if I fail my master's thesis?",
+      "answer": "If your master’s thesis receives an “unsatisfactory” (grade 5.0), you are allowed to retake it once with a new topic, provided you do so within the period specified in section 17 § 6 (if you did not already return the topic) [1]. If you are not permitted to retake the thesis, the concluding module is considered finally failed [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_eim_master_general_provisions_v3.pdf",
+          "page": 19,
+          "snippet": "l examination of 30 to 45 minutes duration. \nOtherwise, section 15 No. 2 applies accordingly. Further and differing regulations \nare contained in the special provisions. \n(3) \nIf the master's thesis is evaluated with grade “unsatisfactory”, it may be retaken \nonce. For this, a new topic is to be ass"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How long does it take to get my thesis grade?",
+      "answer": "I couldn't find this in the documents.",
+      "found": false,
+      "reason": "llm_not_found",
+      "sources": []
+    },
+    {
+      "question": "Wie lade ich meine Masterarbeit elektronisch in PAUL hoch?",
+      "answer": "Melden Sie sich in PAUL an, wählen Sie im Menü **Studium > Prüfungsverwaltung > Meine Prüfungen**, selektieren Sie das Semester, in dem Ihre Masterarbeit angemeldet ist, klicken Sie in der Spalte **Name** auf die entsprechende Prüfung (i.d.R. Master‑ oder Studienarbeit) und laden Sie die PDF/A‑Datei über den Button **Upload** hoch [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_thesis_electronic_submission_de.pdf",
+          "page": 4,
+          "snippet": "3.\nVorgehen beim Hochladen\nDer Upload erfolgt in PAUL unter dem Menüpfad Studium > Prüfungsverwaltung > Meine Prüfungen. \nSie müssen zuerst das Semester auswählen, in dem Ihre Arbeit in PAUL angemeldet ist. Dann müssen Sie in \nder Spalte Name auf die entsprechende Prüfung (i.d.R. Bachelor-, Master- "
+        }
+      ],
+      "faithfulness": {
+        "supported": false,
+        "unsupported_claims": [
+          "Melden Sie sich in PAUL an",
+          "selektieren Sie das Semester, in dem Ihre Masterarbeit angemeldet ist",
+          "klicken Sie in der Spalte Name auf die entsprechende Prüfung (i.d.R. Master‑ oder Studienarbeit)"
+        ]
+      }
+    },
+    {
+      "question": "Until when can v2 students take exams under the old examination regulations?",
+      "answer": "v2 students may take their Master’s examinations (including repeat exams) under the old examination regulations for the last time in the summer semester 2027 [1].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 1,
+          "source": "upb_ese_transitional_regulations_v2_to_v3_en.pdf",
+          "page": 2,
+          "snippet": "iry regulations ESEMA v2 according to §44 AM 34.24 \n1. Students who do not change to these Special Provisions may take their Master's examination, including \nrepeat examinations, for the last time in the summer semester 2027 in accordance with the old version \nof the examination regulations. Thereaf"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "Can I go back to v2 after switching to the v3 regulations?",
+      "answer": "No, you cannot revert to the v2 regulations after you have switched to the v3 version; the change to the new examination regulations is irrevocable[4].",
+      "found": true,
+      "reason": "answered",
+      "sources": [
+        {
+          "n": 4,
+          "source": "upb_ese_transitional_regulations_v2_to_v3_en.pdf",
+          "page": 2,
+          "snippet": "l and Special Provisions, can also be found \non the pages of the ET Student Advisory Service2. \n• In the event of ambiguities or cases not shown, there is the possibility of a case-by-case decision via \nthe Chair of the Examination Board. \n• A change to the new version of the examination regulations"
+        }
+      ],
+      "faithfulness": {
+        "supported": true,
+        "unsupported_claims": []
+      }
+    },
+    {
+      "question": "How much is the semester fee at Paderborn University?",
+      "answer": "I couldn't find this in the documents.",
+      "found": false,
+      "reason": "llm_not_found",
+      "sources": []
+    },
+    {
+      "question": "Do I need German health insurance to enrol?",
+      "answer": "I couldn't find this in the documents.",
+      "found": false,
+      "reason": "llm_not_found",
+      "sources": []
+    },
+    {
+      "question": "How many hours per week can I work with a student visa?",
+      "answer": "I couldn't find this in the documents.",
+      "found": false,
+      "reason": "llm_not_found",
+      "sources": []
+    },
+    {
+      "question": "Which documents do I need to extend my residence permit?",
+      "answer": "I couldn't find this in the documents.",
+      "found": false,
+      "reason": "retrieval_gate (best cosine 0.825 < 0.83)",
+      "sources": []
+    },
+    {
+      "question": "Wann hat die Mensa geöffnet?",
+      "answer": "Dazu habe ich in den Dokumenten nichts gefunden.",
+      "found": false,
+      "reason": "retrieval_gate (best cosine 0.779 < 0.83)",
+      "sources": []
+    },
+    {
+      "question": "Kann ich ein Urlaubssemester beantragen?",
+      "answer": "Dazu habe ich in den Dokumenten nichts gefunden.",
+      "found": false,
+      "reason": "llm_not_found",
+      "sources": []
+    },
+    {
+      "question": "Is the Deutschlandticket included in the semester ticket?",
+      "answer": "I couldn't find this in the documents.",
+      "found": false,
+      "reason": "retrieval_gate (best cosine 0.830 < 0.83)",
+      "sources": []
+    }
+  ]
+}

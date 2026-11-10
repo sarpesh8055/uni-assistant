@@ -70,6 +70,11 @@ CSS = """
 .src .lang {background: #f3f4f6; color: #374151; border-radius: 999px; padding: .05rem .5rem; font-size: .72rem;}
 .src .quote {margin-top: .45rem; color: #4b5563; font-size: .86rem; font-style: italic; border-left: 3px solid #cbd5e1; padding-left: .6rem;}
 .meta {color: #9ca3af; font-size: .78rem; margin-top: .4rem;}
+.unverified {
+  background: #fff7ed; border: 1px solid #fdba74; border-radius: 10px; padding: .6rem .9rem;
+  margin-top: .5rem; color: #7c2d12; font-size: .86rem;
+}
+.unverified ul {margin: .3rem 0 0 1rem; padding: 0;}
 .status-dot {display:inline-block; width:.6rem; height:.6rem; border-radius:50%; margin-right:.4rem;}
 </style>
 """
@@ -106,6 +111,16 @@ def render_reply(data: dict) -> None:
                 + f'</div><div class="quote">“{snippet}…”</div></div>',
                 unsafe_allow_html=True,
             )
+    verdict = data.get("faithfulness") or {}
+    if data.get("found", True) and verdict.get("supported") is False:
+        claims = "".join(f"<li>{html.escape(c[:160])}</li>" for c in verdict.get("unsupported_claims", [])[:3])
+        st.markdown(
+            '<div class="unverified">⚠️ <b>Partly unverified.</b> An automatic check could not find these '
+            f"statements on the cited pages. Please check the source before relying on them:<ul>{claims}</ul></div>",
+            unsafe_allow_html=True,
+        )
+    elif data.get("found", True) and verdict.get("supported") is True:
+        st.markdown('<div class="meta">✅ Checked against the cited pages</div>', unsafe_allow_html=True)
     st.markdown(f'<div class="meta">⏱ {data["latency_ms"] / 1000:.1f} s</div>', unsafe_allow_html=True)
 
 

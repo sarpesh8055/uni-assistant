@@ -138,6 +138,21 @@ streamlit run src/ui.py             # terminal 2
    model used the general provisions' 900-hour workload instead of "120 pages"; "time until thesis grade" was
    answered with an inference the sources don't state. Next steps: reranker, and an answer-faithfulness check.
 
+   Faithfulness judge (`python -m eval.judge_saved eval/results/faithfulness-llm.json`, judge `gpt-oss-20b`):
+
+   | Judged answers | Supported | Flagged | Flags that were justified | False refusals if enforced |
+   |---|---|---|---|---|
+   | 35 | 89% | 4 | 3 of 4 (incl. both wrong thesis answers) | 18% (vs. 8% without) |
+
+   Decision: `FAITHFULNESS_CHECK=report`. The UI shows a "partly unverified" warning instead of refusing,
+   because enforcing would block correct answers too. Lessons:
+   - A first run flagged 17/35 answers. Cause: a bug of mine (the judge saw the cited sources renumbered,
+     so `[5]` pointed at nothing). Measuring in report mode before enforcing caught it.
+   - LLM-as-judge measures **faithfulness, not correctness**: it misses answers that quote the wrong rule
+     ("grades within ten weeks" is a real sentence, but about credit transfer). Hand-written labels catch those.
+   - Groq free tier: 200k tokens/day per model, about 60-70 answers/day with `gpt-oss-120b`.
+     The judge runs on a different model so it has its own quota.
+
    Paste this table into your README. **It's the strongest part of your portfolio.**
 
 Unit tests (no models or API key needed): `pip install -r requirements-dev.txt && pytest`.

@@ -27,6 +27,8 @@ EMBED_MODEL = os.getenv("EMBED_MODEL", "intfloat/multilingual-e5-small")
 LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1")
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o-mini")
+# The faithfulness judge can use a different (smaller, separately rate-limited) model.
+JUDGE_MODEL = os.getenv("JUDGE_MODEL", "") or LLM_MODEL
 
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 800))       # characters per chunk
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 150))  # characters shared between neighbouring chunks
