@@ -174,6 +174,20 @@ Do these in order. Each one is a resume bullet:
 
 ---
 
+## Deployment
+
+**Streamlit Community Cloud (free):** `streamlit_app.py` runs everything in one process
+(`UI_BACKEND=local`) and builds the index on the first start (about 3-5 minutes).
+Set the Groq key etc. under *App settings → Secrets* (TOML), never in the code.
+
+**Docker (any host with ~2 GB RAM):** `docker compose up --build` → UI on :7860, API on :8000.
+The image downloads the documents and builds the index at build time.
+`python -m deploy.hf_space` deploys the same image to a Hugging Face Space
+(Docker Spaces need a PRO account since 2026).
+
+Limits of the free demo: Groq's free tier allows about 200k tokens per day per model
+(roughly 60-70 answers with `gpt-oss-120b`); after that the app shows a "quota used up" message.
+
 ## Interview questions you should be able to answer after this project
 
 - Why hybrid search instead of only embeddings?
