@@ -135,6 +135,9 @@ def friendly_error(text: str) -> str:
     low = text.lower()
     if "429" in low or "rate limit" in low or "rate_limit" in low:
         return QUOTA_MESSAGE
+    if "missing credentials" in low or "api_key" in low or "401" in low:
+        return ("The LLM API key is missing or invalid. Set LLM_API_KEY in .env (local) or in the app's "
+                "Secrets on Streamlit Cloud, then reboot the app.")
     return f"Something went wrong: {text[:300]}"
 
 
