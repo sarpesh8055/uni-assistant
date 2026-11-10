@@ -1,13 +1,6 @@
-# docker compose up --build   ->  API on :8000, UI on :8501
+# docker compose up --build   ->  chat UI on http://localhost:7860 (API on :8000)
 services:
-  api:
+  app:
     build: .
     env_file: .env
-    ports: ["8000:8000"]
-  ui:
-    build: .
-    command: streamlit run src/ui.py --server.port 8501 --server.address 0.0.0.0
-    environment:
-      API_URL: http://api:8000
-    ports: ["8501:8501"]
-    depends_on: [api]
+    ports: ["7860:7860", "8000:8000"]

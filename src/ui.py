@@ -1,15 +1,22 @@
-"""Chat UI that talks to the FastAPI backend.
+"""Chat UI.
 
-Run (with the API already running):  streamlit run src/ui.py
+Two backends:
+  UI_BACKEND=api   (default) talks to the FastAPI service:  uvicorn src.api:app  +  streamlit run src/ui.py
+  UI_BACKEND=local runs retrieval + LLM inside the Streamlit process (used by streamlit_app.py on
+                   Streamlit Community Cloud, where only one process runs). Builds the index on first start.
 """
 import html
 import os
 import re
+import time
 
 import requests
 import streamlit as st
 
 API_BASE = os.getenv("API_URL", "http://localhost:8000")
+UI_BACKEND = os.getenv("UI_BACKEND", "api")
+QUOTA_MESSAGE = ("The free daily LLM quota of this demo is used up. Please try again later "
+                 "(it frees up within 24 hours), or run the project locally with your own key.")
 
 # Readable names for the source PDFs (falls back to the file name).
 DOC_NAMES = {
@@ -124,14 +131,52 @@ def render_reply(data: dict) -> None:
     st.markdown(f'<div class="meta">⏱ {data["latency_ms"] / 1000:.1f} s</div>', unsafe_allow_html=True)
 
 
+def friendly_error(text: str) -> str:
+    low = text.lower()
+    if "429" in low or "rate limit" in low or "rate_limit" in low:
+        return QUOTA_MESSAGE
+    return f"Something went wrong: {text[:300]}"
+
+
 def ask_api(question: str) -> dict:
     try:
         r = requests.post(f"{API_BASE}/ask", json={"question": question}, timeout=120)
     except requests.ConnectionError:
         return {"error": f"Can't reach the API at {API_BASE}. Is `uvicorn src.api:app` running?"}
     if not r.ok:
-        return {"error": f"Error {r.status_code}: {r.text[:300]}"}
+        return {"error": friendly_error(f"Error {r.status_code}: {r.text}")}
     return r.json()
+
+
+@st.cache_resource(show_spinner=False)
+def local_retriever():
+    """Load the index once per server process; build it first if it doesn't exist (fresh cloud container)."""
+    from src.config import BM25_FILE, CHUNKS_FILE, EMBEDDINGS_FILE
+
+    if not (CHUNKS_FILE.exists() and EMBEDDINGS_FILE.exists() and BM25_FILE.exists()):
+        from src import download, index, ingest
+
+        download.main()
+        ingest.main()
+        index.main()
+    from src.retrieve import get_retriever
+
+    return get_retriever()
+
+
+def ask_local(question: str) -> dict:
+    from src.generate import answer
+
+    start = time.perf_counter()
+    try:
+        result = answer(question, retriever=local_retriever())
+    except Exception as e:  # LLM down, quota used up, wrong key...
+        return {"error": friendly_error(f"{type(e).__name__}: {e}")}
+    return {**result, "latency_ms": int((time.perf_counter() - start) * 1000)}
+
+
+def ask(question: str) -> dict:
+    return ask_local(question) if UI_BACKEND == "local" else ask_api(question)
 
 
 def api_online() -> bool:
@@ -146,8 +191,12 @@ st.set_page_config(page_title="Uni Paderborn Study Assistant", page_icon="🎓",
 st.markdown(CSS, unsafe_allow_html=True)
 
 with st.sidebar:
-    online = api_online()
-    color, label = ("#22c55e", "API online") if online else ("#ef4444", "API offline")
+    if UI_BACKEND == "local":
+        online, label = True, "Online"
+    else:
+        online = api_online()
+        label = "API online" if online else "API offline"
+    color = "#22c55e" if online else "#ef4444"
     st.markdown(f'<span class="status-dot" style="background:{color}"></span>**{label}**', unsafe_allow_html=True)
     if not online:
         st.caption("Start it with `uvicorn src.api:app --port 8000`")
@@ -176,6 +225,11 @@ st.markdown(
 if "history" not in st.session_state:
     st.session_state.history = []   # list of (role, payload); payload is str (user) or dict (assistant)
 
+if UI_BACKEND == "local":
+    with st.spinner("Starting up: loading the search index. On a fresh server this downloads the documents "
+                    "and builds the index first (about 3-5 minutes, only once)…"):
+        local_retriever()
+
 pending = None
 if not st.session_state.history:
     st.markdown("**Try one of these:**")
@@ -199,7 +253,7 @@ if question:
         st.markdown(question)
     with st.chat_message("assistant", avatar="🎓"):
         with st.spinner("Searching the documents…"):
-            data = ask_api(question)
+            data = ask(question)
         if "error" in data:
             st.error(data["error"])
         else:
