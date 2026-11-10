@@ -2,6 +2,8 @@
 
 [![ci](https://github.com/sarpesh8055/-uni-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/sarpesh8055/-uni-assistant/actions/workflows/ci.yml)
 
+**🚀 Live demo: https://7ft3w7mmikjqyxjp8kdnwj.streamlit.app** (free tier: may take a minute to wake up)
+
 A multilingual (German/English) RAG assistant that answers questions about German university
 regulations and administrative documents, **with source citations**.
 
