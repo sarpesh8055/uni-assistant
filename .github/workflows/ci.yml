@@ -1,7 +1,8 @@
 name: ci
 on: [push, pull_request]
+
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -10,3 +11,34 @@ jobs:
       # unit tests need no models or API key: retriever and LLM are faked
       - run: pip install python-dotenv pytest
       - run: python -m pytest -q
+
+  retrieval-quality:
+    # Builds the real index from the public PDFs and fails if retrieval quality drops.
+    # No LLM and no API key needed, so it is free and runs on every push.
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - name: Cache embedding model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ hashFiles('src/config.py') }}
+      - name: Install (CPU-only torch keeps it small)
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+      - name: Download documents
+        run: python -m src.download
+      - name: Build index
+        run: python -m src.ingest && python -m src.index
+      - name: Retrieval eval with quality gate
+        run: python -m eval.run_eval --name ci --min-hit 0.90 --min-page-hit 0.85
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results
+          path: eval/results/ci.json

@@ -10,11 +10,12 @@ Hallucination control happens in three layers, cheapest first:
   3. Citation check  — an answer that cites no valid source is treated as
                        ungrounded and replaced by the refusal message.
 """
+import json
 import re
 import sys
 from functools import lru_cache
 
-from src.config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, MIN_DENSE_SCORE
+from src.config import FAITHFULNESS_CHECK, LLM_API_KEY, LLM_BASE_URL, LLM_MODEL, MIN_DENSE_SCORE
 from src.ingest import guess_language
 
 NOT_FOUND_TOKEN = "NOT_FOUND"
@@ -74,6 +75,45 @@ def cited_numbers(text: str, n_sources: int) -> list[int]:
     return seen
 
 
+JUDGE_PROMPT = """You check answers of a document assistant for faithfulness.
+You get numbered SOURCES and an ANSWER that cites them like [1].
+For every claim in the ANSWER, decide whether the cited sources state it (directly or as a clear paraphrase).
+Claims that add information not in the sources, or draw conclusions the sources do not state, are UNSUPPORTED.
+Wording, language (German/English) and formatting differences are fine.
+Reply with JSON only: {"supported": true|false, "unsupported_claims": ["..."]}"""
+
+
+def call_judge(answer_text: str, hits: list[dict]) -> str:
+    response = get_client().chat.completions.create(
+        model=LLM_MODEL,
+        temperature=0,
+        messages=[
+            {"role": "system", "content": JUDGE_PROMPT},
+            {"role": "user", "content": f"SOURCES:\n{build_context(hits)}\n\nANSWER:\n{answer_text}"},
+        ],
+    )
+    return (response.choices[0].message.content or "").strip()
+
+
+def parse_verdict(raw: str) -> dict:
+    """Robust JSON extraction: models sometimes wrap JSON in prose or code fences.
+    If the verdict can't be parsed we don't know, so we report supported=None (not a pass)."""
+    m = re.search(r"\{.*\}", raw, re.S)
+    try:
+        data = json.loads(m.group(0)) if m else {}
+    except json.JSONDecodeError:
+        data = {}
+    supported = data.get("supported")
+    return {
+        "supported": supported if isinstance(supported, bool) else None,
+        "unsupported_claims": [str(c) for c in data.get("unsupported_claims", []) if c][:5],
+    }
+
+
+def check_faithfulness(answer_text: str, cited_hits: list[dict], judge=call_judge) -> dict:
+    return parse_verdict(judge(answer_text, cited_hits))
+
+
 def not_found(question: str, reason: str) -> dict:
     return {
         "answer": NOT_FOUND_MESSAGE[guess_language(question)],
@@ -98,8 +138,14 @@ def call_llm(question: str, hits: list[dict]) -> str:
     return (response.choices[0].message.content or "").strip()
 
 
-def answer(question: str, retriever=None, llm=call_llm, min_score: float = MIN_DENSE_SCORE) -> dict:
-    """`retriever` and `llm` are injectable so the logic can be unit-tested without models."""
+def answer(question: str, retriever=None, llm=call_llm, min_score: float = MIN_DENSE_SCORE,
+           verify: str = FAITHFULNESS_CHECK, judge=call_judge) -> dict:
+    """`retriever`, `llm` and `judge` are injectable so the logic can be unit-tested without models.
+
+    verify: "off"     - no faithfulness check
+            "report"  - run the judge and attach its verdict, but still return the answer
+            "enforce" - refuse if the judge finds unsupported claims
+    """
     if retriever is None:
         from src.retrieve import get_retriever
 
@@ -118,6 +164,13 @@ def answer(question: str, retriever=None, llm=call_llm, min_score: float = MIN_D
     if not cited:
         return not_found(question, reason="no_citations")
 
+    verdict = None
+    if verify in ("report", "enforce"):
+        # the judge only sees the sources the answer cites: a claim must be backed by ITS citation
+        verdict = check_faithfulness(text, [hits[i - 1] for i in cited], judge=judge)
+        if verify == "enforce" and verdict["supported"] is False:
+            return {**not_found(question, reason="unfaithful"), "faithfulness": verdict}
+
     return {
         "answer": text,
         "found": True,
@@ -131,6 +184,7 @@ def answer(question: str, retriever=None, llm=call_llm, min_score: float = MIN_D
             }
             for i in cited
         ],
+        **({"faithfulness": verdict} if verdict else {}),
     }
 
 
