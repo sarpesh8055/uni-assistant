@@ -120,3 +120,26 @@ def test_judge_sees_original_citation_numbers():
            min_score=0.8, verify="report", judge=judge)
     assert seen["ctx"].startswith("[2] (visa.pdf, page 3)")
     assert "[1]" not in seen["ctx"]
+
+
+def test_previous_chunk_on_same_page_is_prepended_without_duplicating_overlap():
+    from src.retrieve import with_previous_chunk
+    rule = "(1) The number of examination attempts is limited to three."
+    chunks = [
+        {"source": "a.pdf", "page": 8, "text": "Other page text that must not leak in."},
+        {"source": "a.pdf", "page": 9, "text": f"Section 43 Retakes. {rule}"},
+        {"source": "a.pdf", "page": 9, "text": "examination attempts is limited to three. Deviating from this, General Education is unlimited."},
+        {"source": "b.pdf", "page": 9, "text": "Another document."},
+    ]
+    ctx = with_previous_chunk(chunks, 2)
+    assert ctx == f"Section 43 Retakes. {rule} Deviating from this, General Education is unlimited."
+    assert with_previous_chunk(chunks, 1) == chunks[1]["text"], "previous page must not be added"
+    assert with_previous_chunk(chunks, 3) == chunks[3]["text"], "other document must not be added"
+    assert with_previous_chunk(chunks, 0) == chunks[0]["text"]
+
+
+def test_llm_sees_context_but_falls_back_to_text():
+    from src.generate import build_context
+    ctx = build_context([{"source": "a.pdf", "page": 1, "text": "short", "context": "longer short"},
+                         {"source": "b.pdf", "page": 2, "text": "plain"}])
+    assert "longer short" in ctx and "plain" in ctx

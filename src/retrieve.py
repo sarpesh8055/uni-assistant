@@ -23,6 +23,27 @@ def rrf_fuse(rankings: list[list[int]], rrf_k: int = 60) -> dict[int, float]:
     return fused
 
 
+def join_overlapping(prev: str, cur: str) -> str:
+    """Glue two neighbouring chunks, dropping the text they share (the chunk overlap)."""
+    for k in range(min(len(prev), len(cur)), 19, -1):   # < 20 chars shared is a coincidence, not overlap
+        if prev.endswith(cur[:k]):
+            return prev + cur[k:]
+    return f"{prev}\n\n{cur}"
+
+
+def with_previous_chunk(chunks: list[dict], i: int) -> str:
+    """The chunk text preceded by the chunk before it on the same page.
+
+    A rule and its exception can land in different chunks; a chunk starting
+    "three. Deviating from this, ..." never says *what* is three. Showing the LLM
+    the previous chunk restores that context without changing retrieval or the
+    page that gets cited."""
+    cur = chunks[i]
+    if i > 0 and chunks[i - 1]["source"] == cur["source"] and chunks[i - 1]["page"] == cur["page"]:
+        return join_overlapping(chunks[i - 1]["text"], cur["text"])
+    return cur["text"]
+
+
 class HybridRetriever:
     def __init__(self, reranker: str = RERANKER):
         import numpy as np
@@ -53,7 +74,8 @@ class HybridRetriever:
 
     def search(self, query: str, k: int = TOP_K, mode: str = RETRIEVAL_MODE, rerank: bool | None = None) -> list[dict]:
         """Return the top-k chunks. Every hit carries `dense_score` (cosine similarity),
-        which generate.py uses to decide whether the documents cover the question at all."""
+        which generate.py uses to decide whether the documents cover the question at all,
+        and `context`: its text with the preceding chunk of the same page, which is what the LLM sees."""
         np = self.np
         n = max(k * 4, 20)
         dense = self.dense_scores(query)
@@ -73,7 +95,8 @@ class HybridRetriever:
         else:
             best = ranked[:k]
         return [
-            {**self.chunks[i], "score": round(fused[i], 4), "dense_score": round(float(dense[i]), 4)}
+            {**self.chunks[i], "context": with_previous_chunk(self.chunks, i),
+             "score": round(fused[i], 4), "dense_score": round(float(dense[i]), 4)}
             for i in best
         ]
 
