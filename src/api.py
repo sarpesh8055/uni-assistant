@@ -7,6 +7,7 @@ import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
 from src.generate import answer
@@ -40,6 +41,11 @@ class AskResponse(BaseModel):
     sources: list[Source]
     faithfulness: dict | None = Field(None, description="Judge verdict when FAITHFULNESS_CHECK is report/enforce")
     latency_ms: int
+
+
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health")
