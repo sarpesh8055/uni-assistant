@@ -3,4 +3,5 @@
 __pycache__/
 .pytest_cache/
 data/raw/*.pdf
+data/raw/*.html
 data/processed/

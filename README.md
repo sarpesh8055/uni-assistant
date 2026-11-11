@@ -44,10 +44,16 @@ Create a GitHub repo now and commit after every step. A clean commit history loo
 ```bash
 python -m src.download
 ```
-This downloads 11 public PDFs from Paderborn University (Electrical Systems Engineering master, v3) into `data/raw/`:
-general and special examination provisions (official German versions **and** English translations), the
-September 2024 amendment, the module handbook, transition rules v2 → v3, and PAUL guides.
-The PDFs are not committed to git; the script makes the corpus reproducible.
+This downloads 19 public sources from Paderborn University into `data/raw/`:
+- **14 PDFs**: general and special examination provisions for the Electrical Systems Engineering master v3
+  (official German versions **and** English translations), the September 2024 amendment, the module handbook,
+  transition rules v2 → v3, PAUL guides, thesis submission, the enrolment regulations (Einschreibungsordnung 2026),
+  and the International Office's enrolment manual and arrival guide.
+- **5 web pages** (saved as `.html`): re-registration and fees, semester and lecture dates, PAUL deadlines,
+  international enrolment, and health insurance. Some facts (the current semester fee, this semester's dates)
+  only exist as web pages. `ingest.py` keeps the page's `<main>` content and cites it as a web page.
+
+The sources are not committed to git; the script makes the corpus reproducible.
 
 👉 *Learn:* the German original and the English reading version are **not identical**. The English one already
 includes the 2024 amendment. Real document collections have versions, and your assistant has to cite the right one.
@@ -122,6 +128,7 @@ streamlit run src/ui.py             # terminal 2
    | `intfloat/multilingual-e5-base` | | | | | |
    | + Reranker `mmarco-mMiniLMv2-L12` (small, multilingual) | 100% | 89% | 0.857 | 43% | 0% |
    | + Reranker `bge-reranker-v2-m3` (568M params) | not run: out of memory on a 4 GB RAM laptop | | | | |
+   | **19 sources** (+ enrolment, fees, dates, health insurance), 50 questions | 96% | 89% | 0.822 | 40% | 0% |
 
    First rows measured on 11 Uni Paderborn ESE v3 PDFs and 45 questions (38 answerable, 7 unanswerable), retrieval only.
    Reranker takeaway: the small reranker finds the right *document* more often but the right *page* less often,
@@ -135,6 +142,18 @@ streamlit run src/ui.py             # terminal 2
    |---|---|---|---|---|
    | First run | 100% | 37% | 96% | several |
    | + citation-format fix, explicit answer language, precedence rule in prompt | 100% | 8% | 91% | 0 |
+   | 19 sources, previous chunk of the same page added to each hit, 50 questions | 80% | 11% | 97.5% | 0 |
+
+   The last row is measured on a bigger, partly different question set: 4 questions labelled "not in the
+   documents" became answerable when the new sources arrived (semester fee, health insurance, leave semester,
+   Deutschlandticket), and 5 questions were added. Lessons:
+   - **Context beats chunk tuning.** "How many times can I attempt an exam?" was refused because the hit began
+     mid-rule: "three. Deviating from this…". Re-chunking at sentence ends didn't fix it (the full rule then ranked
+     #155). Giving the LLM the previous chunk of the same page did: answered with the right citation, no change to retrieval.
+   - **More documents, more competition.** Some exam-rule questions now lose top-5 slots to the new enrolment
+     guides. English questions answered only on German web pages are the weakest spot (keyword search can't match).
+   - **The one unanswerable question it answered** ("documents to *extend* a residence permit") used the list for
+     the *first* residence permit, a near-miss the faithfulness judge can't catch: the sentence is on the page.
 
    The first run's 37% false refusals were mostly a bug: the model cites as `【1】`, the parser only accepted `[1]`.
    Remaining errors (6 of 45): 3 false refusals; "thesis language" is a retrieval miss (the special-provisions page

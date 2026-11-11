@@ -44,3 +44,13 @@ def test_guess_language_short_english_question_without_stopwords():
     assert guess_language("Until when can I cancel my exam registration?") == "en"
     assert guess_language("Bis wann kann ich mich abmelden?") == "de"
     assert guess_language("Prüfungsanmeldung stornieren") == "de"
+
+
+def test_html_to_text_keeps_main_content_only_and_strips_soft_hyphens():
+    from src.ingest import html_to_text
+    page = ("<html><body><nav>Menu Home Login</nav><main><h1>Ge\u00adb\u00fch\u00adren</h1>"
+            "<p>Gesamt: 351,15 \u20ac</p><ul><li>Sozialbeitrag 110,00 \u20ac</li></ul>"
+            "<script>track()</script></main><footer>Impressum</footer></body></html>")
+    text = html_to_text(page)
+    assert text.split("\n\n")[:3] == ["Gebühren", "Gesamt: 351,15 €", "Sozialbeitrag 110,00 €"]
+    assert "Menu" not in text and "Impressum" not in text and "track" not in text

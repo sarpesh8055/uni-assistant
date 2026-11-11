@@ -9,7 +9,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.11" }
       # unit tests need no models or API key: retriever and LLM are faked
-      - run: pip install python-dotenv pytest
+      - run: pip install python-dotenv pytest beautifulsoup4
       - run: python -m pytest -q
 
   retrieval-quality:

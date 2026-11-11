@@ -1,4 +1,4 @@
-"""STEP 1 — Ingestion: PDFs -> clean text -> chunks with metadata.
+"""STEP 1 — Ingestion: PDFs and saved web pages -> clean text -> chunks with metadata.
 
 Run:  python -m src.ingest
 Output: data/processed/chunks.jsonl  (one JSON object per chunk)
@@ -104,16 +104,49 @@ def load_pdf(path):
     yield from enumerate(pages, start=1)
 
 
+BLOCK_TAGS = ["h1", "h2", "h3", "h4", "h5", "p", "li", "tr", "dt", "dd", "div", "section", "table", "ul", "ol"]
+INVISIBLE = dict.fromkeys(map(ord, "­​‌‍﻿"))   # soft hyphens, zero-width chars
+
+
+def html_to_text(raw: bytes | str) -> str:
+    """Main content of a university web page as text with paragraph breaks.
+    Navigation, header and footer live outside <main> and are dropped."""
+    from bs4 import BeautifulSoup  # imported here so the rest can be tested without it
+
+    soup = BeautifulSoup(raw, "html.parser")
+    root = soup.find("main") or soup.body or soup
+    for tag in root.find_all(["script", "style", "nav", "form", "button", "svg", "noscript"]):
+        tag.decompose()
+    for br in root.find_all("br"):
+        br.replace_with("\n")
+    for cell in root.find_all(["td", "th"]):
+        cell.insert_after(" ")
+    for block in root.find_all(BLOCK_TAGS):
+        block.insert_after("\n\n")
+    text = root.get_text().translate(INVISIBLE)
+    lines = [" ".join(line.split()) for line in text.splitlines()]
+    return re.sub(r"\n{3,}", "\n\n", "\n".join(lines)).strip()
+
+
+def load_html(path):
+    """A web page has no pages; it becomes a single "page 1"."""
+    yield 1, html_to_text(path.read_bytes())
+
+
+def load_source(path):
+    return load_html(path) if path.suffix == ".html" else load_pdf(path)
+
+
 def main():
     PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
-    pdfs = sorted(RAW_DIR.glob("*.pdf"))
+    pdfs = sorted([*RAW_DIR.glob("*.pdf"), *RAW_DIR.glob("*.html")])
     if not pdfs:
-        raise SystemExit(f"No PDFs found in {RAW_DIR}. Add some first (see README step 2).")
+        raise SystemExit(f"No PDFs or web pages found in {RAW_DIR}. Run `python -m src.download` first.")
 
     n = 0
     with open(CHUNKS_FILE, "w", encoding="utf-8") as out:
         for pdf in pdfs:
-            for page_no, raw in load_pdf(pdf):
+            for page_no, raw in load_source(pdf):
                 text = clean_text(raw)
                 if len(text) < 50:          # skip empty / cover pages
                     continue
@@ -128,7 +161,7 @@ def main():
                     out.write(json.dumps(record, ensure_ascii=False) + "\n")
                     n += 1
             print(f"✓ {pdf.name}")
-    print(f"\nSaved {n} chunks from {len(pdfs)} PDFs -> {CHUNKS_FILE}")
+    print(f"\nSaved {n} chunks from {len(pdfs)} sources -> {CHUNKS_FILE}")
 
 
 if __name__ == "__main__":
