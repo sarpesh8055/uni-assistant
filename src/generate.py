@@ -50,7 +50,8 @@ def build_context(hits: list[dict]) -> str:
     """Numbered source list. A hit may carry its own number "n" (used by the judge, which sees
     only the cited sources but must keep the numbers the answer refers to)."""
     return "\n\n".join(
-        f"[{h.get('n', i)}] ({h['source']}, page {h['page']})\n{h['text']}" for i, h in enumerate(hits, 1)
+        f"[{h.get('n', i)}] ({h['source']}, page {h['page']})\n{h.get('context', h['text'])}"
+        for i, h in enumerate(hits, 1)
     )
 
 
