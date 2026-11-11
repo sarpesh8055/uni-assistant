@@ -1,0 +1,7 @@
+# The website-style UI (src/ui.py) is designed for a light background.
+[theme]
+base = "light"
+primaryColor = "#2563eb"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f8fafc"
+textColor = "#0f172a"
