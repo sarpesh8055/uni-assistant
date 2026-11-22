@@ -6,7 +6,7 @@ import pickle
 import sys
 from functools import lru_cache
 
-from src.config import (BM25_FILE, EMBED_MODEL, EMBEDDINGS_FILE, RERANK_CANDIDATES, RERANKER,
+from src.config import (BM25_FILE, EMBED_MODEL, EMBEDDINGS_FILE, MAX_PER_SOURCE, RERANK_CANDIDATES, RERANKER,
                         RETRIEVAL_MODE, TOP_K)
 from src.index import load_chunks, tokenize
 
@@ -21,6 +21,24 @@ def rrf_fuse(rankings: list[list[int]], rrf_k: int = 60) -> dict[int, float]:
         for rank, idx in enumerate(ranking):
             fused[idx] = fused.get(idx, 0.0) + 1.0 / (rrf_k + rank + 1)
     return fused
+
+
+def cap_per_source(ranked: list[int], chunks: list[dict], k: int, cap: int = MAX_PER_SOURCE) -> list[int]:
+    """The first k of `ranked`, skipping chunks from a document that already has `cap` hits.
+
+    Without this, one long PDF that mentions the question's words on many pages
+    (e.g. the 17-page enrolment guide for any visa question) can fill all k slots
+    and push out the one page that actually answers it. cap <= 0 turns it off."""
+    best, per_source = [], {}
+    for i in ranked:
+        src = chunks[i]["source"]
+        if cap > 0 and per_source.get(src, 0) >= cap:
+            continue
+        per_source[src] = per_source.get(src, 0) + 1
+        best.append(i)
+        if len(best) == k:
+            break
+    return best
 
 
 def join_overlapping(prev: str, cur: str) -> str:
@@ -91,9 +109,8 @@ class HybridRetriever:
         ranked = sorted(fused, key=fused.get, reverse=True)
         use_rerank = bool(self.reranker_name) if rerank is None else rerank
         if use_rerank:
-            best = self.rerank(query, ranked[:RERANK_CANDIDATES])[:k]
-        else:
-            best = ranked[:k]
+            ranked = self.rerank(query, ranked[:RERANK_CANDIDATES])
+        best = cap_per_source(ranked, self.chunks, k)
         return [
             {**self.chunks[i], "context": with_previous_chunk(self.chunks, i),
              "score": round(fused[i], 4), "dense_score": round(float(dense[i]), 4)}

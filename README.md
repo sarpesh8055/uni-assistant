@@ -131,6 +131,7 @@ streamlit run src/ui.py             # terminal 2
    | + Reranker `bge-reranker-v2-m3` (568M params) | not run: out of memory on a 4 GB RAM laptop | | | | |
    | **19 sources** (+ enrolment, fees, dates, health insurance), 50 questions | 96% | 89% | 0.822 | 40% | 0% |
    | **25 sources** (+ leave semester, de-registration, programme change, finances, housing, visa), 56 questions | 94% | 88% | 0.804 | 40% | 0% |
+   | + max 3 chunks per document in the top 5 (`MAX_PER_SOURCE=3`) | 96% | 90% | 0.809 | 40% | 0% |
 
    First rows measured on 11 Uni Paderborn ESE v3 PDFs and 45 questions (38 answerable, 7 unanswerable), retrieval only.
    Reranker takeaway: the small reranker finds the right *document* more often but the right *page* less often,

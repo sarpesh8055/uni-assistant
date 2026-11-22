@@ -34,6 +34,9 @@ CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", 800))       # characters per chunk
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", 150))  # characters shared between neighbouring chunks
 TOP_K = int(os.getenv("TOP_K", 5))                    # chunks given to the LLM
 RETRIEVAL_MODE = os.getenv("RETRIEVAL_MODE", "hybrid")  # hybrid | dense | sparse
+# At most this many of the TOP_K chunks may come from one document, so one long PDF can't crowd out
+# every other source. 3 fixed a crowded-out question with no regressions; 2 lost a page hit. 0 = off.
+MAX_PER_SOURCE = int(os.getenv("MAX_PER_SOURCE", 3))
 
 # Optional cross-encoder reranker: re-scores the top RERANK_CANDIDATES fused hits and keeps TOP_K.
 # Empty = off. Multilingual options: BAAI/bge-reranker-v2-m3 (best, ~2 GB, slow on CPU),
