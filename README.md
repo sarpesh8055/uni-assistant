@@ -44,13 +44,14 @@ Create a GitHub repo now and commit after every step. A clean commit history loo
 ```bash
 python -m src.download
 ```
-This downloads 19 public sources from Paderborn University into `data/raw/`:
+This downloads 25 public sources from Paderborn University into `data/raw/`:
 - **14 PDFs**: general and special examination provisions for the Electrical Systems Engineering master v3
   (official German versions **and** English translations), the September 2024 amendment, the module handbook,
   transition rules v2 → v3, PAUL guides, thesis submission, the enrolment regulations (Einschreibungsordnung 2026),
   and the International Office's enrolment manual and arrival guide.
-- **5 web pages** (saved as `.html`): re-registration and fees, semester and lecture dates, PAUL deadlines,
-  international enrolment, and health insurance. Some facts (the current semester fee, this semester's dates)
+- **11 web pages** (saved as `.html`): re-registration and fees, semester and lecture dates, PAUL deadlines,
+  international enrolment, health insurance, leave semester (Beurlaubung), de-registration (Exmatrikulation),
+  changing programme, and the International Office's pages on finances, housing and visa/first steps. Some facts (the current semester fee, this semester's dates)
   only exist as web pages. `ingest.py` keeps the page's `<main>` content and cites it as a web page.
 
 The sources are not committed to git; the script makes the corpus reproducible.
@@ -129,6 +130,7 @@ streamlit run src/ui.py             # terminal 2
    | + Reranker `mmarco-mMiniLMv2-L12` (small, multilingual) | 100% | 89% | 0.857 | 43% | 0% |
    | + Reranker `bge-reranker-v2-m3` (568M params) | not run: out of memory on a 4 GB RAM laptop | | | | |
    | **19 sources** (+ enrolment, fees, dates, health insurance), 50 questions | 96% | 89% | 0.822 | 40% | 0% |
+   | **25 sources** (+ leave semester, de-registration, programme change, finances, housing, visa), 56 questions | 94% | 88% | 0.804 | 40% | 0% |
 
    First rows measured on 11 Uni Paderborn ESE v3 PDFs and 45 questions (38 answerable, 7 unanswerable), retrieval only.
    Reranker takeaway: the small reranker finds the right *document* more often but the right *page* less often,

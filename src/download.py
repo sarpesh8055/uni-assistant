@@ -13,6 +13,7 @@ EI = "https://ei.uni-paderborn.de/fileadmin-eim/elektrotechnik"
 UB = "https://digital.ub.uni-paderborn.de/hs/download/pdf"
 WWW = "https://www.uni-paderborn.de"
 IO = f"{WWW}/fileadmin/international-office"
+IO_LIVE = f"{WWW}/en/studies/international-office/degree-students/live-in-paderborn-and-on-campus"
 
 DOCUMENTS = {
     # general provisions for all EIM master's programmes (v3, from WS 2024/25)
@@ -58,6 +59,14 @@ WEB_PAGES = {
         f"{WWW}/en/studies/international-office/degree-students/formalities-and-services/immatrikulation",
     "upb_io_health_insurance_en.html":
         f"{WWW}/en/studies/international-office/degree-students/live-in-paderborn-and-on-campus/health-insurance",
+    # leave semester, de-registration, changing programme (all students)
+    "upb_beurlaubung_de.html": f"{WWW}/zv/3-3/studienorganisation/beurlaubung",
+    "upb_exmatrikulation_de.html": f"{WWW}/zv/3-3/studienorganisation/exmatrikulation-und-streichung",
+    "upb_studiengangwechsel_de.html": f"{WWW}/zv/3-3/studienorganisation/wechsel-und-parallelstudium",
+    # living in Paderborn as an international student
+    "upb_io_finances_en.html": f"{IO_LIVE}/finances",
+    "upb_io_visa_first_steps_en.html": f"{IO_LIVE}/support-for-visa-and-first-steps",
+    "upb_io_housing_en.html": f"{IO_LIVE}/wohnmoeglichkeiten",
 }
 
 # where a source can be read online (shown as a link next to citations)

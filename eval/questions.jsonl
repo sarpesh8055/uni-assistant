@@ -48,3 +48,9 @@
 {"question": "Which documents do I need to upload for enrolment as an international student?", "expected": [{"source": "upb_io_enrollment_en.html"}, {"source": "upb_io_enrolment_manual_en.pdf"}, {"source": "upb_io_short_guide_ss26_en.pdf"}], "answer": "See the International Office checklist (documents required for enrolment/upload)."}
 {"question": "Where can I buy a bicycle in Paderborn?", "expected": [], "answer": "Not in the documents."}
 {"question": "Wann ist die Universitätsbibliothek geöffnet?", "expected": [], "answer": "Nicht in den Dokumenten."}
+{"question": "How much does it cost per month to live as a student in Paderborn?", "expected": [{"source": "upb_io_finances_en.html", "page": 1}], "answer": "About 1,210 € per month (rent ~400 €, health insurance ~140 €, food ~350 €, ...)."}
+{"question": "How much is a private room in Paderborn?", "expected": [{"source": "upb_io_housing_en.html", "page": 1}], "answer": "Between 280 and 380 euros a month, including utilities."}
+{"question": "Should I enrol before I have my visa?", "expected": [{"source": "upb_io_visa_first_steps_en.html", "page": 1}], "answer": "No. The acceptance letter is enough for the visa; enrolling without a visa causes problems."}
+{"question": "Kann ich im ersten Fachsemester des Masters ein Urlaubssemester nehmen?", "expected": [{"source": "upb_beurlaubung_de.html", "page": 1}], "answer": "Ja, im Masterstudium sind Beurlaubungen für das 1. Fachsemester möglich."}
+{"question": "Wie beantrage ich die Exmatrikulation?", "expected": [{"source": "upb_exmatrikulation_de.html", "page": 1}], "answer": "Elektronisch über PAUL > Studium > Anträge; nicht rückwirkend."}
+{"question": "Wie kann ich in einen anderen Studiengang wechseln?", "expected": [{"source": "upb_studiengangwechsel_de.html", "page": 1}], "answer": "Über PAUL neu bewerben und dort Wechsel oder Paralleleinschreibung angeben."}
