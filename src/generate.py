@@ -34,6 +34,10 @@ Answer ONLY using the numbered sources provided. Rules:
   "general provisions" (Allgemeine Bestimmungen), and a later amendment (Änderung) overrides the text it amends.
   When this applies, give the overriding rule.
 - Give concrete numbers, deadlines and limits when the sources contain them.
+- Only state what the sources say. Do not add your own conclusions, summaries ("Therefore...")
+  or explanations of who pays or what a figure includes or excludes, unless a source says so.
+- Copy totals and lists exactly as the source gives them; do not re-add, split or reinterpret them.
+- Do not confuse similar terms (e.g. tuition fees vs. semester fee); keep the source's distinction.
 - Be concise and practical (at most 5 sentences)."""
 
 LANGUAGE_NAME = {"en": "English", "de": "German"}
